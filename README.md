@@ -9,7 +9,7 @@ $ d2x src
 $ ls html/*   # profit!
 ```
 
-> NOTE: before you run `d2x src` make sure a `theme` + `src`-folder exists. [Here](https://raw.githubusercontent.com/coderofsalvation/d2x/master/d2x) you can download an example.
+> NOTE: before you run `d2x src` make sure a `theme` + `src`-folder exists. [Here](https://raw.githubusercontent.com/coderofsalvation/d2x/master/theme.zip) you can download an example.
 
 Now pick a nice template [here](https://github.com/coderofsalvation/html5up) and get started!
 
