@@ -1,0 +1,74 @@
+#!/bin/bash
+#{
+# d2x - directory 2 x (html etc)
+#
+# Usage:
+#}
+PATH=$PATH:./theme
+declare -A LISTENERS
+args="$*"
+
+grep_inbetween(){
+  cat | awk "/$1/,/$2/"
+}
+
+init(){
+	[[ ${#args} == 0 ]] && usage 
+	init_eventlistener
+	for i in theme/plugins/*; do source "$i"; done
+}
+
+usage(){
+	cat "$0" | grep_inbetween '^#{' '^#}' | sed 's/[#{}]//g' 
+	cat "$0" | grep_inbetween '^##' '$'   | sed 's/#//g'| xargs printf "   %s"
+	echo -e "\n\n"
+	exit 0
+}
+
+init_eventlistener(){ # eventhandler: https://gist.github.com/coderofsalvation/8268365
+  event(){
+	E=$1; shift; [[ "$E" == "DEBUG" ]] && E="${BASH_COMMAND// */}"
+	for listener in "${LISTENERS[$E]}"; do 
+		[[ "${#listener}" == 0 ]] && continue;
+		eval "$listener $@ ${BASH_COMMAND}"; 
+	done
+  }
+
+  on(){
+	if ! test "${LISTENERS['$1']+isset}"; then LISTENERS["$1"]=""; fi
+	LISTENERS["$1"]+="$2 " # luckily functionnames never contain spaces
+  }
+  # redirect traps to events
+  for i in EXIT SIGINT SIGTERM DEBUG; do trap "event $i" $i; done
+}
+
+render(){
+	cat "$1" | sed 's/"/\\\"/g;s/.*/echo "&"/e' 
+}
+
+renderpages(){
+	find "$1" | grep -v '^'"$1"'$' | while read file; do 
+		if [[ -d "$file"  ]]; then 
+			[[ ! -z "$(ls -A $file)" ]] && renderpages "$file"
+			[[ ! "$file" =~ "index\.html" ]] && continue
+		fi
+		dir="$(dirname "${file/src/html}")"
+		[[ ! -d "$dir" ]] && mkdir -p "$dir"
+		render theme/index.html $file | while read line; do 
+			[[ "$line" =~ "<!-- content" ]] && cat "$file" && continue
+			echo "$line"
+		done > ${file/src/html}
+	done;
+	return 0
+}
+
+## generate <dir> <html>    - convert directory to html 
+generate(){
+	init
+	[[ ! -d html ]] && mkdir html
+	echo "[x] rendering"
+	renderpages src 
+}
+
+init "$1"
+generate "$1"
