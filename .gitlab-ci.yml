@@ -4,7 +4,7 @@ variables:
   LC_ALL: C.UTF-8
 
 before_script:
-  - apk add rsync imagemagick ffmpeg bash file findutils perl
+  - apk add rsync imagemagick ffmpeg bash file findutils perl sed sort unzip
 
 pages:
   stage: deploy
