@@ -20,10 +20,10 @@ $ ls html/*       # profit!
 
 ## features
 
-* KISS / zero dependencies (just bash)
+* simplicity / zero dependencies (just bash)
 * directory structure is the navigation
 * transparent urls: `src/foo.txt` will be accessible as `html/foo.txt` and `html/foo.txt.html`
-* easily to be used on embedded systems or github/gitlab CI (see `.gitlab-ci.yml`)
+* easily to be used on embedded systems or to publish github/gitlab pages (see `.gitlab-ci.yml`)
 * template language is bash
 * easy writable plugins (in any language)
 
@@ -69,7 +69,25 @@ Absolutely, the `index.html` even supports environvariables:
 </html>
 ```
 
+And this theme will basically process a given directory-structure (`src` in the example):
+
+```
+src/10 collection A/bar.html
+src/10 collection A/foo.html
+src/10 collection A/textfile.txt
+src/20 collection B/flop.html
+src/20 collection B/shader.frag
+src/index.html
+```
+
+In theory you could also use this to generate photoalbums, productlistings, source-code documentation etc!
+
 ## Why
 
 Natural selection does [not always lead to greater complexity](https://www.newscientist.com/article/dn13617-evolution-myths-natural-selection-leads-to-ever-greater-complexity/).<br>
 Not being stuck in a rut (of zillion dependencies) is bliss.
+
+## Inspiration / similar simplicity tools
+
+* [Expose](https://github.com/Jack000/Expose)
+* [ssg](https://www.romanzolotarev.com/ssg.html)
