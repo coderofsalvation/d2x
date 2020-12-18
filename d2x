@@ -57,7 +57,7 @@ renderpages(){
 	indir="$1"
 	outdir="$2"
 	root="$3"
-	find "$indir" -maxdepth 1 | sort -h | grep -v '^'"$1"'$' | while read file; do 
+	find "$indir" -maxdepth 1 | sort -g | grep -v '^'"$1"'$' | while read file; do 
 		if [[ -d "$file"  ]]; then 
 			[[ ! -z "$(ls -A "$file")"   ]] && renderpages "$file" "$outdir" "$root"
 			continue;
