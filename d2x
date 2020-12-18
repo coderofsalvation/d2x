@@ -1,6 +1,6 @@
 #!/bin/bash
 #{
-# d2x - directory 2 x (html etc)
+# d2x - directory2x (html etc)
 #
 # Usage:
 #}
@@ -12,10 +12,16 @@ grep_inbetween(){
   cat | awk "/$1/,/$2/"
 }
 
+pump(){
+	printf "."
+}
+
 init(){
+	reqs="cat sed find xargs test which grep ls"
+	for i in $reqs; do which $i &>/dev/null || { echo "error: please somehow install $i"; exit 1; }; done
 	[[ ${#args} == 0 ]] && usage 
 	init_eventlistener
-	for i in theme/plugins/*; do source "$i"; done
+	for i in $(find theme/plugins -maxdepth 1 -type f); do source "$i"; done
 }
 
 usage(){
@@ -47,28 +53,51 @@ render(){
 }
 
 renderpages(){
-	find "$1" | grep -v '^'"$1"'$' | while read file; do 
+	indir="$1"
+	outdir="$2"
+	root="$3"
+	find "$indir" -maxdepth 1 | sort -h | grep -v '^'"$1"'$' | while read file; do 
 		if [[ -d "$file"  ]]; then 
-			[[ ! -z "$(ls -A $file)" ]] && renderpages "$file"
-			[[ ! "$file" =~ "index\.html" ]] && continue
+			[[ ! -z "$(ls -A "$file")"   ]] && renderpages "$file" "$outdir" "$root"
+			continue;
 		fi
-		dir="$(dirname "${file/src/html}")"
+		dir="$(dirname "${file/$root/$outdir}")"
+		outfile="${file/$root/$outdir}"
+		pump
 		[[ ! -d "$dir" ]] && mkdir -p "$dir"
-		render theme/index.html $file | while read line; do 
-			[[ "$line" =~ "<!-- content" ]] && cat "$file" && continue
-			echo "$line"
-		done > ${file/src/html}
+		[[ -f "theme/plugins/filetype/${file/*\./}" ]] && {
+			source "theme/plugins/filetype/${file/*\./}" 
+		} > "$outfile"
 	done;
 	return 0
 }
 
-## generate <dir> <html>    - convert directory to html 
-generate(){
-	init
-	[[ ! -d html ]] && mkdir html
-	echo "[x] rendering"
-	renderpages src 
+serve(){
+	cd "$1"
+	echo "[x] starting server at port 8000"
+	which python2 &>/dev/null && { python2 -m SimpleHTTPServer; exit; }
+	which python3 &>/dev/null && { python3 -m http.server     ; exit; }
+	which php     &>/dev/null && { php -S localhost:8000      ; exit; }
+	which node    &>/dev/null && {
+		which http-server &>/dev/null || npm install http-server
+		http-server -c-1 -p 8000 .	
+	}
 }
 
-init "$1"
-generate "$1"
+## generate <dir> <outdir> [--server] 
+generate(){
+	init
+	printf "[x] rendering $1 => $2"
+	renderpages "$1" "$2" "$1"
+	echo "[x] done"
+	[[ $3 == "--server" ]] && serve "$2"
+}
+
+if [[ -d "$1" ]]; then
+	[[ -n $2 ]] && [[ ! -d "$2" ]] && mkdir -p "$2"
+	init "$1"
+	generate "$@"
+else
+	[[ ! -n $1 ]] && usage
+	"$@" 
+fi
