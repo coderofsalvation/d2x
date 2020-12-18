@@ -26,6 +26,7 @@ $ ls html/*       # profit!
 * easily to be used on embedded systems or to publish github/gitlab pages (see `.gitlab-ci.yml`)
 * template language is bash
 * easy writable plugins (in any language)
+* easy to host from a subdirectory (just run `echo 'https://foo.com/my/sub/folder' > theme/url` like in `.gitlab.yml`)
 
 > it only uses: cat sed find xargs test which grep ls
 

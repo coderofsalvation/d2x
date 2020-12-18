@@ -10,7 +10,8 @@ pages:
   stage: deploy
   script:
   - "[[ ! -f src ]] && ./d2x init"
-  - BASE_HREF="https://coderofsalvation.gitlab.io/d2x/" ./d2x src html
+  - "echo 'https://coderofsalvation.gitlab.io/d2x' > theme/url"
+  - ./d2x src html
   - mkdir public
   - cp -r html/* public/.
   - find public
