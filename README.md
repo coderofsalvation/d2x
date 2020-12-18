@@ -1,13 +1,13 @@
 ![](https://i.imgur.com/Wc1MguG.jpg)
 
-Ultra simple map-a-directory-to-something-else
+Ultra simple map-a-directory-to-something-else ([SEE DEMO HERE](https://coderofsalvation.gitlab.io/d2x/))
 
 # Usage
 
 ```
 $ wget "https://raw.githubusercontent.com/coderofsalvation/d2x/master/d2x"
 $ chmod 755 d2x
-$ d2x init        # create example theme + src-folder
+$ d2x init        # optional: create example theme + src-folder
 $ d2x src html --server
 [x] copying theme/assets => html/assets
 [x] rendering src => html......[x] done
@@ -15,8 +15,7 @@ $ d2x src html --server
 Serving HTTP on 0.0.0.0 port 8000 ...
 $ ls html/*       # profit!
 ```
-
-> NOTE: before you run `d2x src` make sure a `theme` + `src`-folder exists. [Here](https://raw.githubusercontent.com/coderofsalvation/d2x/master/theme.zip) you can download an example.
+![](https://raw.githubusercontent.com/coderofsalvation/d2x/master/demo.gif)
 
 ## features
 
