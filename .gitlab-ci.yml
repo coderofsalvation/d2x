@@ -9,7 +9,7 @@ before_script:
 pages:
   stage: deploy
   script:
-  - [[ ! -f src ]] && ./d2x init
+  - "[[ ! -f src ]] && ./d2x init"
   - ./d2x src html
   - mkdir public
   - cp -r html/* public/.
