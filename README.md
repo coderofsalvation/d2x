@@ -23,7 +23,7 @@ $ ls html/*       # profit!
 * KISS / zero dependencies (just bash)
 * directory structure is the navigation
 * transparent urls: `src/foo.txt` will be accessible as `html/foo.txt` and `html/foo.txt.html`
-* easily to be used with CI or on embedded systems
+* easily to be used on embedded systems or github/gitlab CI (see `.gitlab-ci.yml`)
 * template language is bash
 * easy writable plugins (in any language)
 
