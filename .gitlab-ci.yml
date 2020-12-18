@@ -1,0 +1,20 @@
+image: mhart/alpine-node:10.16.3
+
+variables:
+  LC_ALL: C.UTF-8
+
+before_script:
+  - apk add rsync imagemagick ffmpeg bash file findutils perl
+
+pages:
+  stage: deploy
+  script:
+  - ./d2x src html
+  - mkdir public
+  - cp -r html/* public/.
+  - find public
+  artifacts:
+    paths:
+    - public
+  only:
+  - master

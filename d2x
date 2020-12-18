@@ -16,8 +16,9 @@ pump(){
 	printf "."
 }
 
-init(){
+_init(){
 	reqs="cat sed find xargs test which grep ls"
+	[[ ! -d theme ]] && reqs="$reqs wget unzip"
 	for i in $reqs; do which $i &>/dev/null || { echo "error: please somehow install $i"; exit 1; }; done
 	[[ ${#args} == 0 ]] && usage 
 	init_eventlistener
@@ -26,7 +27,7 @@ init(){
 
 usage(){
 	cat "$0" | grep_inbetween '^#{' '^#}' | sed 's/[#{}]//g' 
-	cat "$0" | grep_inbetween '^##' '$'   | sed 's/#//g'| xargs printf "   %s"
+	cat "$0" | grep_inbetween '^##' '$'   | sed 's/#//g'| xargs printf "   %s\n"
 	echo -e "\n\n"
 	exit 0
 }
@@ -84,9 +85,19 @@ serve(){
 	}
 }
 
+## init 
+init(){
+	if [[ ! -d theme ]]; then 
+		[[ -d src ]] && { echo "error: please backup and delete the src-folder to proceed"; exit 1; }
+		wget "https://github.com/coderofsalvation/d2x/raw/master/themes/default.zip"
+		unzip default.zip 1>/dev/null
+		rm default.zip
+	fi
+}
+
 ## generate <dir> <outdir> [--server] 
 generate(){
-	init
+	_init
 	printf "[x] rendering $1 => $2"
 	renderpages "$1" "$2" "$1"
 	echo "[x] done"
@@ -95,7 +106,7 @@ generate(){
 
 if [[ -d "$1" ]]; then
 	[[ -n $2 ]] && [[ ! -d "$2" ]] && mkdir -p "$2"
-	init "$1"
+	_init "$1"
 	generate "$@"
 else
 	[[ ! -n $1 ]] && usage
